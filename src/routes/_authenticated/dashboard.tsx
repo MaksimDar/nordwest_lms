@@ -169,18 +169,8 @@ function Dashboard() {
   });
 
   if (!isLecturer) {
-    return (
-      <AppShell title="Student portal" subtitle="This account is registered as a student.">
-        <div className="panel p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            The lecturer dashboard is only available to lecturer accounts.
-          </p>
-          <Button asChild className="mt-4">
-            <Link to="/portal">Go to my studies</Link>
-          </Button>
-        </div>
-      </AppShell>
-    );
+    // Students are redirected to their portal by AppShell; render nothing here.
+    return <AppShell title="">{null}</AppShell>;
   }
 
   return (
