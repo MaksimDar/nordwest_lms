@@ -36,7 +36,7 @@ export const summarizeMaterial = createServerFn({ method: "POST" })
             type: "file",
             data: new Uint8Array(await blob.arrayBuffer()),
             mediaType: "application/pdf",
-            filename: m.file_path.split("/").pop(),
+            filename: m.file_path.split("/").pop() ?? "material.pdf",
           });
         } else if (/\.(txt|md|csv|html?)$/.test(lower)) {
           parts.push({ type: "text", text: (await blob.text()).slice(0, 60000) });
