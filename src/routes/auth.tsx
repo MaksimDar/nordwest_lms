@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
+import { demoAccounts, signInAsDemo } from "@/lib/demo";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign in — NordWest LMS" },
       {
         name: "description",
-        content: "Sign in or create a NordWest LMS account as a lecturer or a student.",
+        content: "Sign in to NordWest LMS with the university email and password you were given.",
       },
       { property: "og:title", content: "Sign in — NordWest LMS" },
       {
@@ -103,6 +104,36 @@ function AuthPage() {
               Sign in
             </Button>
           </form>
+          <div className="mt-8 rounded-lg border border-border bg-secondary/50 p-4">
+            <p className="eyebrow text-muted-foreground">Live demo · one-click sign in</p>
+            <div className="mt-3 grid gap-2">
+              {demoAccounts.map((a) => (
+                <button
+                  key={a.key}
+                  type="button"
+                  disabled={busy}
+                  onClick={async () => {
+                    setBusy(true);
+                    try {
+                      await signInAsDemo(a.key);
+                    } catch (err) {
+                      toast.error((err as Error).message);
+                      setBusy(false);
+                    }
+                  }}
+                  className="flex items-center gap-3 rounded-md border border-border bg-card p-3 text-left transition-colors hover:border-primary disabled:opacity-60"
+                >
+                  <span className="gold-surface flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold">
+                    {a.key === "anna" ? "AM" : "MS"}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-medium">{a.name}</span>
+                    <span className="block text-xs text-muted-foreground">{a.role}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
           <p className="mt-6 text-xs text-muted-foreground">
             No account? Contact the NordWest IT office — accounts are created by the university.
           </p>

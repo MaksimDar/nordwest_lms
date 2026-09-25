@@ -18,7 +18,10 @@ import { Route as AuthenticatedMeetRouteImport } from './routes/_authenticated/m
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated/teach'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalProgramRouteImport } from './routes/_authenticated/portal/program'
+import { Route as AuthenticatedPortalRegisterRouteImport } from './routes/_authenticated/portal/register'
 import { Route as AuthenticatedPortalResultsRouteImport } from './routes/_authenticated/portal/results'
 import { Route as AuthenticatedPortalExamExamIdRouteImport } from './routes/_authenticated/portal/exam.$examId'
 
@@ -67,10 +70,27 @@ const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
   path: '/test',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedPortalIndexRoute =
   AuthenticatedPortalIndexRouteImport.update({
     id: '/portal/',
     path: '/portal/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalProgramRoute =
+  AuthenticatedPortalProgramRouteImport.update({
+    id: '/portal/program',
+    path: '/portal/program',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalRegisterRoute =
+  AuthenticatedPortalRegisterRouteImport.update({
+    id: '/portal/register',
+    path: '/portal/register',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedPortalResultsRoute =
@@ -95,6 +115,9 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
+  '/api/chat': typeof ApiChatRoute
+  '/portal/program': typeof AuthenticatedPortalProgramRoute
+  '/portal/register': typeof AuthenticatedPortalRegisterRoute
   '/portal/results': typeof AuthenticatedPortalResultsRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
   '/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
@@ -108,6 +131,9 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
+  '/api/chat': typeof ApiChatRoute
+  '/portal/program': typeof AuthenticatedPortalProgramRoute
+  '/portal/register': typeof AuthenticatedPortalRegisterRoute
   '/portal/results': typeof AuthenticatedPortalResultsRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
   '/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
@@ -123,6 +149,9 @@ export interface FileRoutesById {
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
+  '/api/chat': typeof ApiChatRoute
+  '/_authenticated/portal/program': typeof AuthenticatedPortalProgramRoute
+  '/_authenticated/portal/register': typeof AuthenticatedPortalRegisterRoute
   '/_authenticated/portal/results': typeof AuthenticatedPortalResultsRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
   '/_authenticated/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
@@ -138,6 +167,9 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/teach'
     | '/test'
+    | '/api/chat'
+    | '/portal/program'
+    | '/portal/register'
     | '/portal/results'
     | '/portal/'
     | '/portal/exam/$examId'
@@ -151,6 +183,9 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/teach'
     | '/test'
+    | '/api/chat'
+    | '/portal/program'
+    | '/portal/register'
     | '/portal/results'
     | '/portal'
     | '/portal/exam/$examId'
@@ -165,6 +200,9 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications'
     | '/_authenticated/teach'
     | '/_authenticated/test'
+    | '/api/chat'
+    | '/_authenticated/portal/program'
+    | '/_authenticated/portal/register'
     | '/_authenticated/portal/results'
     | '/_authenticated/portal/'
     | '/_authenticated/portal/exam/$examId'
@@ -174,6 +212,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -241,11 +280,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTestRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/portal/': {
       id: '/_authenticated/portal/'
       path: '/portal'
       fullPath: '/portal/'
       preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/program': {
+      id: '/_authenticated/portal/program'
+      path: '/portal/program'
+      fullPath: '/portal/program'
+      preLoaderRoute: typeof AuthenticatedPortalProgramRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/register': {
+      id: '/_authenticated/portal/register'
+      path: '/portal/register'
+      fullPath: '/portal/register'
+      preLoaderRoute: typeof AuthenticatedPortalRegisterRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/portal/results': {
@@ -272,6 +332,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
+  AuthenticatedPortalProgramRoute: typeof AuthenticatedPortalProgramRoute
+  AuthenticatedPortalRegisterRoute: typeof AuthenticatedPortalRegisterRoute
   AuthenticatedPortalResultsRoute: typeof AuthenticatedPortalResultsRoute
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
   AuthenticatedPortalExamExamIdRoute: typeof AuthenticatedPortalExamExamIdRoute
@@ -284,6 +346,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
+  AuthenticatedPortalProgramRoute: AuthenticatedPortalProgramRoute,
+  AuthenticatedPortalRegisterRoute: AuthenticatedPortalRegisterRoute,
   AuthenticatedPortalResultsRoute: AuthenticatedPortalResultsRoute,
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
   AuthenticatedPortalExamExamIdRoute: AuthenticatedPortalExamExamIdRoute,
@@ -296,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

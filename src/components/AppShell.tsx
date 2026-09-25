@@ -8,9 +8,13 @@ import {
   PenSquare,
   Users,
   Bell,
+  ListChecks,
+  Route,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { ChatWidget } from "@/components/ChatWidget";
+import { DemoSwitcher } from "@/components/DemoSwitcher";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser, useSignOut } from "@/lib/auth";
 
@@ -24,6 +28,8 @@ const lecturerNav = [
 
 const studentNav = [
   { to: "/portal", label: "My studies", icon: GraduationCap },
+  { to: "/portal/program", label: "My program", icon: Route },
+  { to: "/portal/register", label: "Course registration", icon: ListChecks },
   { to: "/portal/results", label: "My results", icon: ClipboardList },
 ] as const;
 
@@ -44,7 +50,10 @@ export function AppShell({
   const nav = isLecturer ? lecturerNav : studentNav;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
+    <DemoSwitcher currentEmail={email} />
+    <ChatWidget isLecturer={isLecturer} />
+    <div className="flex flex-1">
       <aside className="hidden w-64 shrink-0 flex-col bg-sidebar px-4 py-6 text-sidebar-foreground lg:flex">
         <Link to="/" className="mb-8 flex items-center gap-3 px-2">
           <span className="gold-surface flex size-9 items-center justify-center rounded-md font-display text-base font-bold">
@@ -58,7 +67,9 @@ export function AppShell({
 
         <nav className="flex flex-1 flex-col gap-1">
           {nav.map((item) => {
-            const active = pathname === item.to || pathname.startsWith(item.to + "/");
+            const active =
+              pathname === item.to ||
+              (item.to !== "/portal" && pathname.startsWith(item.to + "/"));
             return (
               <Link
                 key={item.to}
@@ -136,8 +147,9 @@ export function AppShell({
             ))}
           </nav>
         </header>
-        <main className="flex-1 px-6 py-6">{children}</main>
+        <main className="flex-1 px-6 py-6 pb-24">{children}</main>
       </div>
+    </div>
     </div>
   );
 }
