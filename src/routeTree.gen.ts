@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedGradeRouteImport } from './routes/_authenticated/grade'
 import { Route as AuthenticatedMeetRouteImport } from './routes/_authenticated/meet'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated/teach'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
@@ -36,6 +37,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGradeRoute = AuthenticatedGradeRouteImport.update({
+  id: '/grade',
+  path: '/grade',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMeetRoute = AuthenticatedMeetRouteImport.update({
   id: '/meet',
   path: '/meet',
@@ -56,6 +62,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/grade': typeof AuthenticatedGradeRoute
   '/meet': typeof AuthenticatedMeetRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/grade': typeof AuthenticatedGradeRoute
   '/meet': typeof AuthenticatedMeetRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
@@ -74,21 +82,24 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/grade': typeof AuthenticatedGradeRoute
   '/_authenticated/meet': typeof AuthenticatedMeetRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/meet' | '/teach' | '/test'
+  fullPaths:
+    '/' | '/auth' | '/dashboard' | '/grade' | '/meet' | '/teach' | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/meet' | '/teach' | '/test'
+  to: '/' | '/auth' | '/dashboard' | '/grade' | '/meet' | '/teach' | '/test'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/grade'
     | '/_authenticated/meet'
     | '/_authenticated/teach'
     | '/_authenticated/test'
@@ -130,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/grade': {
+      id: '/_authenticated/grade'
+      path: '/grade'
+      fullPath: '/grade'
+      preLoaderRoute: typeof AuthenticatedGradeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/meet': {
       id: '/_authenticated/meet'
       path: '/meet'
@@ -156,6 +174,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedGradeRoute: typeof AuthenticatedGradeRoute
   AuthenticatedMeetRoute: typeof AuthenticatedMeetRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
@@ -163,6 +182,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedGradeRoute: AuthenticatedGradeRoute,
   AuthenticatedMeetRoute: AuthenticatedMeetRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
