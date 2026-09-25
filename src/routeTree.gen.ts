@@ -15,8 +15,12 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGradeRouteImport } from './routes/_authenticated/grade'
 import { Route as AuthenticatedMeetRouteImport } from './routes/_authenticated/meet'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated/teach'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
+import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalResultsRouteImport } from './routes/_authenticated/portal/results'
+import { Route as AuthenticatedPortalExamExamIdRouteImport } from './routes/_authenticated/portal/exam.$examId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,6 +51,12 @@ const AuthenticatedMeetRoute = AuthenticatedMeetRouteImport.update({
   path: '/meet',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
   id: '/teach',
   path: '/teach',
@@ -57,6 +67,24 @@ const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
   path: '/test',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPortalIndexRoute =
+  AuthenticatedPortalIndexRouteImport.update({
+    id: '/portal/',
+    path: '/portal/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalResultsRoute =
+  AuthenticatedPortalResultsRouteImport.update({
+    id: '/portal/results',
+    path: '/portal/results',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalExamExamIdRoute =
+  AuthenticatedPortalExamExamIdRouteImport.update({
+    id: '/portal/exam/$examId',
+    path: '/portal/exam/$examId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -64,8 +92,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/grade': typeof AuthenticatedGradeRoute
   '/meet': typeof AuthenticatedMeetRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
+  '/portal/results': typeof AuthenticatedPortalResultsRoute
+  '/portal/': typeof AuthenticatedPortalIndexRoute
+  '/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,8 +105,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/grade': typeof AuthenticatedGradeRoute
   '/meet': typeof AuthenticatedMeetRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/test': typeof AuthenticatedTestRoute
+  '/portal/results': typeof AuthenticatedPortalResultsRoute
+  '/portal': typeof AuthenticatedPortalIndexRoute
+  '/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,15 +120,40 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/grade': typeof AuthenticatedGradeRoute
   '/_authenticated/meet': typeof AuthenticatedMeetRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
+  '/_authenticated/portal/results': typeof AuthenticatedPortalResultsRoute
+  '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
+  '/_authenticated/portal/exam/$examId': typeof AuthenticatedPortalExamExamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/dashboard' | '/grade' | '/meet' | '/teach' | '/test'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/grade'
+    | '/meet'
+    | '/notifications'
+    | '/teach'
+    | '/test'
+    | '/portal/results'
+    | '/portal/'
+    | '/portal/exam/$examId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/grade' | '/meet' | '/teach' | '/test'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/grade'
+    | '/meet'
+    | '/notifications'
+    | '/teach'
+    | '/test'
+    | '/portal/results'
+    | '/portal'
+    | '/portal/exam/$examId'
   id:
     | '__root__'
     | '/'
@@ -101,8 +162,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/grade'
     | '/_authenticated/meet'
+    | '/_authenticated/notifications'
     | '/_authenticated/teach'
     | '/_authenticated/test'
+    | '/_authenticated/portal/results'
+    | '/_authenticated/portal/'
+    | '/_authenticated/portal/exam/$examId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -155,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMeetRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/teach': {
       id: '/_authenticated/teach'
       path: '/teach'
@@ -169,6 +241,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTestRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/portal/': {
+      id: '/_authenticated/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/results': {
+      id: '/_authenticated/portal/results'
+      path: '/portal/results'
+      fullPath: '/portal/results'
+      preLoaderRoute: typeof AuthenticatedPortalResultsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/exam/$examId': {
+      id: '/_authenticated/portal/exam/$examId'
+      path: '/portal/exam/$examId'
+      fullPath: '/portal/exam/$examId'
+      preLoaderRoute: typeof AuthenticatedPortalExamExamIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -176,16 +269,24 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGradeRoute: typeof AuthenticatedGradeRoute
   AuthenticatedMeetRoute: typeof AuthenticatedMeetRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
+  AuthenticatedPortalResultsRoute: typeof AuthenticatedPortalResultsRoute
+  AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
+  AuthenticatedPortalExamExamIdRoute: typeof AuthenticatedPortalExamExamIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGradeRoute: AuthenticatedGradeRoute,
   AuthenticatedMeetRoute: AuthenticatedMeetRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
+  AuthenticatedPortalResultsRoute: AuthenticatedPortalResultsRoute,
+  AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
+  AuthenticatedPortalExamExamIdRoute: AuthenticatedPortalExamExamIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
