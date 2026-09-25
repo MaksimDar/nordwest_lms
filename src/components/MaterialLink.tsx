@@ -26,7 +26,10 @@ export function MaterialLink({
     const { data, error } = await supabase.storage
       .from("course-materials")
       .createSignedUrl(filePath!, 3600);
-    if (error || !data) return toast.error("This file could not be opened");
+    if (error || !data) {
+      toast.error("This file could not be opened");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noreferrer");
   }
 
