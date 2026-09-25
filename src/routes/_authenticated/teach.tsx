@@ -106,8 +106,6 @@ function TeachMyStudent() {
         setUploading(false);
         if (upErr) throw upErr;
         filePath = path;
-        url =
-          supabase.storage.from("course-materials").getPublicUrl(path).data.publicUrl ?? url;
       }
 
       const { error } = await supabase.from("materials").insert({
