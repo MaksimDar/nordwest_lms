@@ -11,3 +11,4 @@
 - [ ] gradeMyStudent (marking, auto-marking, publish results)
 - [ ] Student portal (courses, materials, tasks, exams, results)
 - [ ] Head metadata per route, build check
+- [ ] Remove self-registration; pre-create lecturer & student accounts
