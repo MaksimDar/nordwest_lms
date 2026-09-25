@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ExternalLink, FileText, Plus, Trash2 } from "lucide-react";
+import { FileText, Plus, Trash2 } from "lucide-react";
+
+import { MaterialLink } from "@/components/MaterialLink";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -282,13 +284,7 @@ function TeachMyStudent() {
                     <Badge variant="secondary" className="capitalize">
                       {m.kind}
                     </Badge>
-                    {m.url ? (
-                      <Button asChild size="sm" variant="ghost">
-                        <a href={m.url} target="_blank" rel="noreferrer">
-                          <ExternalLink className="size-4" />
-                        </a>
-                      </Button>
-                    ) : null}
+                    <MaterialLink url={m.url} filePath={m.file_path} />
                     <Button
                       size="sm"
                       variant="ghost"
