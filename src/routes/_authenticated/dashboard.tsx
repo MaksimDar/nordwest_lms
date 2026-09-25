@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
+import { AtRiskPanel } from "@/components/AtRiskPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -261,6 +262,8 @@ function Dashboard() {
             ))}
           </div>
         </section>
+
+        {user?.id ? <AtRiskPanel lecturerId={user.id} /> : null}
 
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
           <section className="panel p-6">
