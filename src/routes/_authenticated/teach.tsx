@@ -4,7 +4,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { FileText, Plus, Trash2 } from "lucide-react";
 
+import { useServerFn } from "@tanstack/react-start";
 import { MaterialLink } from "@/components/MaterialLink";
+import { StudySummary } from "@/components/StudySummary";
+import { summarizeMaterial } from "@/lib/ai.functions";
 
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
@@ -93,6 +96,7 @@ function TeachMyStudent() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const summarize = useServerFn(summarizeMaterial);
   const addMaterial = useMutation({
     mutationFn: async (form: FormData) => {
       const file = form.get("file") as File | null;
@@ -110,21 +114,31 @@ function TeachMyStudent() {
         filePath = path;
       }
 
-      const { error } = await supabase.from("materials").insert({
-        course_id: activeId!,
-        title: String(form.get("title") ?? ""),
-        kind: String(form.get("kind") ?? "slides"),
-        lecture_date: (form.get("lecture_date") as string) || null,
-        notes: String(form.get("notes") ?? ""),
-        url,
-        file_path: filePath,
-      });
+      const { data: created, error } = await supabase
+        .from("materials")
+        .insert({
+          course_id: activeId!,
+          title: String(form.get("title") ?? ""),
+          kind: String(form.get("kind") ?? "slides"),
+          lecture_date: (form.get("lecture_date") as string) || null,
+          notes: String(form.get("notes") ?? ""),
+          url,
+          file_path: filePath,
+          summary_status: "pending",
+        })
+        .select("id")
+        .single();
       if (error) throw error;
+      return created.id;
     },
-    onSuccess: () => {
-      toast.success("Material uploaded");
+    onSuccess: (id) => {
+      toast.success("Material uploaded — the AI study summary is being written");
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["materials"] });
+      summarize({ data: { materialId: id } })
+        .then(() => toast.success("AI study summary ready"))
+        .catch(() => toast.error("The AI summary could not be created — try again from the list"))
+        .finally(() => queryClient.invalidateQueries({ queryKey: ["materials"] }));
     },
     onError: (e: Error) => {
       setUploading(false);
@@ -278,6 +292,12 @@ function TeachMyStudent() {
                         {m.lecture_date ? `Lecture ${m.lecture_date}` : "No lecture date"}
                       </p>
                       {m.notes ? <p className="mt-1 text-sm">{m.notes}</p> : null}
+                      <StudySummary
+                        materialId={m.id}
+                        summary={m.ai_summary}
+                        status={m.summary_status}
+                        canGenerate
+                      />
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

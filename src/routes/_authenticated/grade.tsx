@@ -17,9 +17,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { draftExamFeedback } from "@/lib/ai.functions";
 import { useCurrentUser } from "@/lib/auth";
 import { isAutoMarkable, questionKindLabel, useMyCourses, useProfilesMap } from "@/lib/lms";
+
+function FeedbackEditor({
+  attemptId,
+  initial,
+  published,
+}: {
+  attemptId: string;
+  initial: string;
+  published: boolean;
+}) {
+  const qc = useQueryClient();
+  const [text, setText] = useState(initial);
+  const draft = useServerFn(draftExamFeedback);
+  const generate = useMutation({
+    mutationFn: () => draft({ data: { attemptId } }),
+    onSuccess: (res) => {
+      setText((res as { feedback?: string })?.feedback ?? text);
+      toast.success("AI draft ready — review and edit before releasing");
+      qc.invalidateQueries({ queryKey: ["attempts"] });
+    },
+    onError: (e: Error) => toast.error(e.message || "Draft could not be created"),
+  });
+  const save = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("exam_attempts")
+        .update({ feedback: text })
+        .eq("id", attemptId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Feedback saved");
+      qc.invalidateQueries({ queryKey: ["attempts"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div className="mt-4 rounded-lg border border-dashed border-border p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <Label className="text-sm font-medium">Feedback for the student</Label>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={generate.isPending}
+          onClick={() => generate.mutate()}
+        >
+          <Sparkles className={`mr-1 size-4 ${generate.isPending ? "animate-pulse" : ""}`} />
+          {generate.isPending ? "Writing draft…" : text ? "Redraft with AI" : "Draft feedback with AI"}
+        </Button>
+      </div>
+      <Textarea
+        rows={5}
+        className="mt-2"
+        value={text}
+        placeholder="Write feedback, or let the AI draft it from the marked answers."
+        onChange={(e) => setText(e.target.value)}
+      />
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">
+          {published
+            ? "Results are published — students see saved feedback."
+            : "Students see this only after you publish results."}
+        </p>
+        <Button size="sm" disabled={save.isPending || text === initial} onClick={() => save.mutate()}>
+          Save feedback
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/_authenticated/grade")({
   head: () => ({
@@ -324,6 +397,12 @@ function GradeMyStudent() {
                     })}
                   </ul>
                 ) : null}
+                <FeedbackEditor
+                  key={attempt.id + attempt.feedback}
+                  attemptId={attempt.id}
+                  initial={attempt.feedback}
+                  published={activeExam.results_published}
+                />
               </section>
             );
           })}

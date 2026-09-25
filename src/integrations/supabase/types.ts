@@ -19,30 +19,45 @@ export type Database = {
           avatar_url: string | null
           code: string
           created_at: string
+          credits: number
           description: string
+          discipline: string
           id: string
           lecturer_id: string
+          max_seats: number
           name: string
+          professor_name: string
+          registration_open: boolean
           semester: string
         }
         Insert: {
           avatar_url?: string | null
           code: string
           created_at?: string
+          credits?: number
           description?: string
+          discipline?: string
           id?: string
           lecturer_id: string
+          max_seats?: number
           name: string
+          professor_name?: string
+          registration_open?: boolean
           semester?: string
         }
         Update: {
           avatar_url?: string | null
           code?: string
           created_at?: string
+          credits?: number
           description?: string
+          discipline?: string
           id?: string
           lecturer_id?: string
+          max_seats?: number
           name?: string
+          professor_name?: string
+          registration_open?: boolean
           semester?: string
         }
         Relationships: []
@@ -249,6 +264,7 @@ export type Database = {
       }
       materials: {
         Row: {
+          ai_summary: string | null
           course_id: string
           created_at: string
           file_path: string | null
@@ -256,10 +272,12 @@ export type Database = {
           kind: string
           lecture_date: string | null
           notes: string
+          summary_status: string
           title: string
           url: string | null
         }
         Insert: {
+          ai_summary?: string | null
           course_id: string
           created_at?: string
           file_path?: string | null
@@ -267,10 +285,12 @@ export type Database = {
           kind?: string
           lecture_date?: string | null
           notes?: string
+          summary_status?: string
           title: string
           url?: string | null
         }
         Update: {
+          ai_summary?: string | null
           course_id?: string
           created_at?: string
           file_path?: string | null
@@ -278,6 +298,7 @@ export type Database = {
           kind?: string
           lecture_date?: string | null
           notes?: string
+          summary_status?: string
           title?: string
           url?: string | null
         }
@@ -348,6 +369,53 @@ export type Database = {
           semester_level?: number | null
           student_number?: string | null
           study_course?: string | null
+        }
+        Relationships: []
+      }
+      program_requirements: {
+        Row: {
+          category: string
+          course_id: string
+          id: string
+          program: string
+          recommended_semester: number
+        }
+        Insert: {
+          category?: string
+          course_id: string
+          id?: string
+          program: string
+          recommended_semester?: number
+        }
+        Update: {
+          category?: string
+          course_id?: string
+          id?: string
+          program?: string
+          recommended_semester?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_requirements_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seed_scripts: {
+        Row: {
+          id: string
+          sql: string
+        }
+        Insert: {
+          id: string
+          sql: string
+        }
+        Update: {
+          id?: string
+          sql?: string
         }
         Relationships: []
       }
@@ -488,6 +556,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      course_seat_counts: {
+        Args: never
+        Returns: {
+          course_id: string
+          enrolled: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

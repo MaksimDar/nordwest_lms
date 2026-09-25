@@ -4,6 +4,7 @@ import { CalendarDays, FileText, Video } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { MaterialLink } from "@/components/MaterialLink";
+import { StudySummary } from "@/components/StudySummary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -202,6 +203,11 @@ function StudentPortal() {
                         {m.kind}
                         {m.lecture_date ? ` · ${m.lecture_date}` : ""}
                       </p>
+                      <StudySummary
+                        materialId={m.id}
+                        summary={m.ai_summary}
+                        status={m.summary_status}
+                      />
                     </div>
                   </div>
                   <MaterialLink url={m.url} filePath={m.file_path} />
