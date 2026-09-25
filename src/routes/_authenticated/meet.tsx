@@ -150,7 +150,10 @@ function MeetMyStudent() {
   });
 
   const updateEnrollment = useMutation({
-    mutationFn: async (input: { id: string; patch: Record<string, unknown> }) => {
+    mutationFn: async (input: {
+      id: string;
+      patch: { attempts?: number; coursework_passed?: boolean; semester_level?: number };
+    }) => {
       const { error } = await supabase
         .from("enrollments")
         .update(input.patch)
