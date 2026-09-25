@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/portal/")({
       },
     ],
   }),
-  component: StudentPortal;
+  component: StudentPortal,
 });
 
 function StudentPortal() {
