@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedMeetRouteImport } from './routes/_authenticated/meet'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated/teach'
+import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -45,6 +46,11 @@ const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
   path: '/teach',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/meet': typeof AuthenticatedMeetRoute
   '/teach': typeof AuthenticatedTeachRoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/meet': typeof AuthenticatedMeetRoute
   '/teach': typeof AuthenticatedTeachRoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,13 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/meet': typeof AuthenticatedMeetRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
+  '/_authenticated/test': typeof AuthenticatedTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/meet' | '/teach'
+  fullPaths: '/' | '/auth' | '/dashboard' | '/meet' | '/teach' | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/meet' | '/teach'
+  to: '/' | '/auth' | '/dashboard' | '/meet' | '/teach' | '/test'
   id:
     | '__root__'
     | '/'
@@ -82,6 +91,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/meet'
     | '/_authenticated/teach'
+    | '/_authenticated/test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeachRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/test': {
+      id: '/_authenticated/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof AuthenticatedTestRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -141,12 +158,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMeetRoute: typeof AuthenticatedMeetRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
+  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMeetRoute: AuthenticatedMeetRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
+  AuthenticatedTestRoute: AuthenticatedTestRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
