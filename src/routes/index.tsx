@@ -71,13 +71,14 @@ function Landing() {
             Courses, students, teaching material, examinations and results — four connected
             stages, one calendar, and a student portal that is always one click away.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button asChild size="lg" className="gold-surface hover:opacity-90">
-              <Link to="/auth">Create your account</Link>
+              <Link to="/auth">Sign in with your university email</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link to="/auth">I already have an account</Link>
-            </Button>
+            <p className="max-w-sm text-sm text-primary-foreground/70">
+              Accounts are issued by NordWest University. Lecturers and students sign in with the
+              email and password they received from the university.
+            </p>
           </div>
         </div>
       </header>
