@@ -5,9 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/auth")({
@@ -35,15 +33,10 @@ function AuthPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<"lecturer" | "student">("lecturer");
-  const [studentNumber, setStudentNumber] = useState("");
-  const [studyCourse, setStudyCourse] = useState("");
-  const [semesterLevel, setSemesterLevel] = useState("1");
 
   useEffect(() => {
-    if (ready && session) navigate({ to: role === "student" ? "/portal" : "/dashboard" });
-  }, [ready, session, navigate, role]);
+    if (ready && session) navigate({ to: "/dashboard" });
+  }, [ready, session, navigate]);
 
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
@@ -52,38 +45,6 @@ function AuthPage() {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Welcome back");
-    navigate({ to: "/dashboard" });
-  }
-
-  async function signUp(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: {
-          full_name: fullName,
-          role,
-          student_number: role === "student" ? studentNumber : null,
-          study_course: studyCourse,
-          semester_level: role === "student" ? semesterLevel : null,
-        },
-      },
-    });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Account created");
-    navigate({ to: role === "student" ? "/portal" : "/dashboard" });
-  }
-
-  async function google() {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) return toast.error("Google sign-in failed");
-    if (result.redirected) return;
     navigate({ to: "/dashboard" });
   }
 
@@ -110,135 +71,38 @@ function AuthPage() {
 
       <div className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
-          <Tabs defaultValue="signin">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign in</TabsTrigger>
-              <TabsTrigger value="signup">Create account</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="signin" className="mt-6">
-              <form onSubmit={signIn} className="space-y-4">
-                <div>
-                  <Label htmlFor="si-email">University email</Label>
-                  <Input
-                    id="si-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="si-pw">Password</Label>
-                  <Input
-                    id="si-pw"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={busy}>
-                  Sign in
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup" className="mt-6">
-              <form onSubmit={signUp} className="space-y-4">
-                <div>
-                  <Label>I am a</Label>
-                  <div className="mt-2 grid grid-cols-2 gap-2">
-                    {(["lecturer", "student"] as const).map((r) => (
-                      <Button
-                        key={r}
-                        type="button"
-                        variant={role === r ? "default" : "outline"}
-                        onClick={() => setRole(r)}
-                        className="capitalize"
-                      >
-                        {r}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="su-name">Full name</Label>
-                  <Input
-                    id="su-name"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="su-email">University email</Label>
-                  <Input
-                    id="su-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="su-pw">Password</Label>
-                  <Input
-                    id="su-pw"
-                    type="password"
-                    required
-                    minLength={6}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="su-course">
-                    {role === "student" ? "Course of study" : "Department"}
-                  </Label>
-                  <Input
-                    id="su-course"
-                    value={studyCourse}
-                    onChange={(e) => setStudyCourse(e.target.value)}
-                  />
-                </div>
-                {role === "student" ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="su-sid">Student ID</Label>
-                      <Input
-                        id="su-sid"
-                        value={studentNumber}
-                        onChange={(e) => setStudentNumber(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="su-sem">Semester</Label>
-                      <Input
-                        id="su-sem"
-                        type="number"
-                        min={1}
-                        value={semesterLevel}
-                        onChange={(e) => setSemesterLevel(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-                <Button type="submit" className="w-full" disabled={busy}>
-                  Create account
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-
-          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />
-            or
-            <span className="h-px flex-1 bg-border" />
-          </div>
-          <Button variant="outline" className="w-full" onClick={google}>
-            Continue with Google
-          </Button>
+          <h1 className="font-display text-2xl font-bold">Sign in</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Use the university account provided by NordWest administration.
+          </p>
+          <form onSubmit={signIn} className="mt-6 space-y-4">
+            <div>
+              <Label htmlFor="si-email">University email</Label>
+              <Input
+                id="si-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="si-pw">Password</Label>
+              <Input
+                id="si-pw"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={busy}>
+              Sign in
+            </Button>
+          </form>
+          <p className="mt-6 text-xs text-muted-foreground">
+            No account? Contact the NordWest IT office — accounts are created by the university.
+          </p>
         </div>
       </div>
     </div>
